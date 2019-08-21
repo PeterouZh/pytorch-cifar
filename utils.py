@@ -7,7 +7,7 @@ import os
 import sys
 import time
 import math
-
+import torch
 import torch.nn as nn
 import torch.nn.init as init
 
@@ -42,13 +42,16 @@ def init_params(net):
                 init.constant(m.bias, 0)
 
 
-_, term_width = os.popen('stty size', 'r').read().split()
-term_width = int(term_width)
+# _, term_width = os.popen('stty size', 'r').read().split()
+# term_width = int(term_width)
+term_width = 10
 
 TOTAL_BAR_LENGTH = 65.
 last_time = time.time()
 begin_time = last_time
-def progress_bar(current, total, msg=None):
+def progress_bar(current, total, msg=None, stdout=None):
+    if not stdout:
+        stdout = sys.stdout
     global last_time, begin_time
     if current == 0:
         begin_time = time.time()  # Reset for new bar.
@@ -56,13 +59,13 @@ def progress_bar(current, total, msg=None):
     cur_len = int(TOTAL_BAR_LENGTH*current/total)
     rest_len = int(TOTAL_BAR_LENGTH - cur_len) - 1
 
-    sys.stdout.write(' [')
+    stdout.write(' [')
     for i in range(cur_len):
-        sys.stdout.write('=')
-    sys.stdout.write('>')
+        stdout.write('=')
+    stdout.write('>')
     for i in range(rest_len):
-        sys.stdout.write('.')
-    sys.stdout.write(']')
+        stdout.write('.')
+    stdout.write(']')
 
     cur_time = time.time()
     step_time = cur_time - last_time
@@ -76,20 +79,20 @@ def progress_bar(current, total, msg=None):
         L.append(' | ' + msg)
 
     msg = ''.join(L)
-    sys.stdout.write(msg)
+    stdout.write(msg)
     for i in range(term_width-int(TOTAL_BAR_LENGTH)-len(msg)-3):
-        sys.stdout.write(' ')
+        stdout.write(' ')
 
     # Go back to the center of the bar.
     for i in range(term_width-int(TOTAL_BAR_LENGTH/2)+2):
-        sys.stdout.write('\b')
-    sys.stdout.write(' %d/%d ' % (current+1, total))
+        stdout.write('\b')
+    stdout.write(' %d/%d ' % (current+1, total))
 
     if current < total-1:
-        sys.stdout.write('\r')
+        stdout.write('\r')
     else:
-        sys.stdout.write('\n')
-    sys.stdout.flush()
+        stdout.write('\n')
+    stdout.flush()
 
 def format_time(seconds):
     days = int(seconds / 3600/24)
