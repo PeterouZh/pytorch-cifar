@@ -1,6 +1,6 @@
 [submodule "pytorch-cifar10-exp-master"]
 	path = pytorch-cifar10-exp-master
-	url = https://0.0.0.0:8443/PeterouZh/pytorch-cifar10-exp.git
+	url = git@github.com:PeterouZh/pytorch-cifar10-exp.git
 [submodule "submodule/template_lib-master"]
 	path = submodule/template_lib-master
 	url = https://0.0.0.0:8443/PeterouZh/template_lib.git
